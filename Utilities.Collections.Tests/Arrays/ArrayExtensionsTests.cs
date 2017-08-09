@@ -49,5 +49,15 @@ namespace Utilities.Collections.Tests.Arrays
             new Action(()=>array.Splice(1,-2)).ShouldThrow<ArgumentException>();
             new Action(()=>array.Splice(-1,-2)).ShouldThrow<ArgumentException>();
         }
+
+        //[Fact]
+        //public void Append_Adds_elements()
+        //{
+        //    var array = new[] {1, 2, 3, 4};
+        //    array.Append(5, 6);
+        //    array.Length.ShouldEqual(6);
+        //    array[4].ShouldEqual(5);
+        //    array[5].ShouldEqual(6);
+        //}
     }
 }

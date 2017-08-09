@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -74,6 +76,28 @@ namespace Utilities.Reflection
             if (type == null) throw new ArgumentNullException(nameof(type));
 
             return type.IsValueType ? Activator.CreateInstance(type) : null;
+        }
+
+        /// <summary>
+        /// If provided type implements <see cref="IEnumerable{T}"/>, returns T.
+        /// </summary>
+        /// <param name="type">Type to inspect</param>
+        /// <returns>T of <see cref="IEnumerable{T}"/> or null if <paramref name="type"/> does not implement <see cref="IEnumerable{T}"/></returns>
+        /// <exception cref="ArgumentNullException"><paramref name=""/> is <see langword="null" />.</exception>
+        /// <exception cref="TargetInvocationException">A static initializer is invoked and throws an exception. </exception>
+        [Pure]
+        [CanBeNull]
+        [UsedImplicitly]
+        public static Type GetGenericEnumerableItemType([NotNull] Type type)
+        {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+            var iEnumerable1 = type.GetInterfaces()
+                .FirstOrDefault(
+                    i =>
+                        i.IsGenericType &&
+                        i.GetGenericTypeDefinition() == typeof (IEnumerable<>).GetGenericTypeDefinition());
+
+            return iEnumerable1?.GetGenericArguments().FirstOrDefault();
         }
     }
 }

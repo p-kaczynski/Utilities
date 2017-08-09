@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
 namespace Utilities.Collections.Arrays
@@ -6,7 +7,7 @@ namespace Utilities.Collections.Arrays
     /// <summary>
     /// Contains extension methods for Arrays.
     /// </summary>
-    [UsedImplicitly]
+    [PublicAPI]
     public static class ArrayExtensions
     {
         /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null" />.</exception>
@@ -33,5 +34,32 @@ namespace Utilities.Collections.Arrays
 
             return newArray;
         }
+
+        [NotNull]
+        [PublicAPI]
+        public static T[] OrEmptyArray<T>([CanBeNull] this T[] arr) => arr ?? new T[0];
+
+        ///// <summary>
+        ///// Resizes the array and adds <paramref name="elements"/> to the end of it, in provided order.
+        ///// </summary>
+        ///// <typeparam name="T">Array element type</typeparam>
+        ///// <param name="array">Array to modify</param>
+        ///// <param name="elements">Elements to add</param>
+        ///// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null" />.</exception>
+        ///// <exception cref="ArgumentNullException"><paramref name="elements"/> is <see langword="null" />.</exception>
+        ///// <exception cref="OverflowException">The array is multidimensional and contains more than <see cref="F:System.Int32.MaxValue" /> elements.</exception>
+        //[NotNull]
+        //public static void Append<T>([NotNull]this T[] array, [NotNull] params T[] elements)
+        //{
+        //    if (array == null) throw new ArgumentNullException(nameof(array));
+        //    if (elements == null) throw new ArgumentNullException(nameof(elements));
+
+        //    // quick bail if no elements to add
+        //    if (elements.Length == 0) return;
+
+        //    Array.Resize(ref array, array.Length + elements.Length);
+        //    for (var i = 0; i < elements.Length; ++i)
+        //        array[array.Length - i - 1] = elements[i];
+        //}
     }
 }

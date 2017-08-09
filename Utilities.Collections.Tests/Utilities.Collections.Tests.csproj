@@ -61,7 +61,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Arrays\ArrayExtensionsTests.cs" />
+    <Compile Include="Dictionaries\DictionaryExtensionsTests.cs" />
+    <Compile Include="Enumerables\OfTypesExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReadOnlyExtensionsTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

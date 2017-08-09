@@ -41,10 +41,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Arrays\ArrayExtensions.cs" />
+    <Compile Include="Dictionaries\DictionaryExtensions.cs" />
+    <Compile Include="Entities\EntityExtensions.cs" />
+    <Compile Include="Lists\ListExtensions.cs" />
+    <Compile Include="Enumerables\EnumerableExtensions.cs" />
+    <Compile Include="Enumerables\OfTypesExtensions.cs" />
     <Compile Include="JetBrains.Annotations.cs" />
+    <Compile Include="NameValueCollection\NameValueCollectionExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReadOnlyExtensions.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /Y "$(TargetDir)$(ProjectName).dll" "$(SolutionDir)lib\$(ProjectName).dll"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Should;
@@ -55,6 +56,31 @@ namespace Utilities.Reflection.Tests
                 .GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
                 .Count(m => m.HasCustomAttribute<HasAttributeTestAttribute>(false)).ShouldEqual(1);
         }
+
+        [Fact]
+        public void IsGenericEnumerableOf_Functionality()
+        {
+            new List<UnderTest>().GetType().IsGenericEnumerableOf<UnderTest>().ShouldBeTrue();
+            new List<UnderTestSub1>().GetType().IsGenericEnumerableOf<UnderTest>().ShouldBeTrue();
+            new List<UnderTestWithInterface>().GetType().IsGenericEnumerableOf<UnderTest>().ShouldBeFalse();
+            new List<UnderTest>().GetType().IsGenericEnumerableOf<IUnderTest>().ShouldBeFalse();
+            new List<IUnderTest>().GetType().IsGenericEnumerableOf<IUnderTest>().ShouldBeTrue();
+            new List<UnderTestWithInterface>().GetType().IsGenericEnumerableOf<IUnderTest>().ShouldBeTrue();
+
+            typeof(UnderTest[]).IsGenericEnumerableOf<UnderTest>().ShouldBeTrue();
+            typeof(UnderTestSub1[]).IsGenericEnumerableOf<UnderTest>().ShouldBeTrue();
+            typeof(UnderTestWithInterface[]).IsGenericEnumerableOf<UnderTest>().ShouldBeFalse();
+            typeof(UnderTest[]).IsGenericEnumerableOf<IUnderTest>().ShouldBeFalse();
+            typeof(IUnderTest[]).IsGenericEnumerableOf<IUnderTest>().ShouldBeTrue();
+            typeof(UnderTestWithInterface[]).IsGenericEnumerableOf<IUnderTest>().ShouldBeTrue();
+        }
+
+        // TEST CLASSES BELOW
+
+        private class UnderTest { }
+        private class UnderTestSub1 : UnderTest{ }
+        private interface IUnderTest { }
+        private class UnderTestWithInterface : IUnderTest { }
 
         private class HasAttributeTestAttribute : Attribute
         {
