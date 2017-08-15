@@ -24,6 +24,11 @@ namespace Utilities.Collections.NameValueCollection
                 ? result
                 : throw new FormatException($"The entry {key} does not have correct boolean value: {source[key]}");
 
+        [PublicAPI]
+        public static bool GetBoolOrDefault(this System.Collections.Specialized.NameValueCollection source, string key,
+            bool defaultValue)
+            => bool.TryParse(source[key], out bool result) ? result : defaultValue;
+
         /// <exception cref="FormatException">Entry <paramref name="key"/> cannot be read as DateTime and <paramref name="suppressException"/> is false.</exception>
         [PublicAPI]
         public static DateTime GetDateTime(this System.Collections.Specialized.NameValueCollection source, string key,
