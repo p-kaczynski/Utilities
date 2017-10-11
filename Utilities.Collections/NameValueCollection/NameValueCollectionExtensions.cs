@@ -44,6 +44,26 @@ namespace Utilities.Collections.NameValueCollection
             ? (DateTime?)result 
             : null;
 
+        [PublicAPI]
+        public static TimeSpan? GetTimeSpanFromTicks(this System.Collections.Specialized.NameValueCollection source,
+            string key)
+            =>
+                source[key] == null
+                    ? null
+                    : long.TryParse(source[key], out long ticks)
+                        ? (TimeSpan?)TimeSpan.FromTicks(ticks)
+                        : null;
+
+        [PublicAPI]
+        public static TimeSpan GetTimeSpanFromTicks(this System.Collections.Specialized.NameValueCollection source,
+            string key, TimeSpan defaultTimeSpan)
+            =>
+                source[key] == null
+                    ? defaultTimeSpan
+                    : long.TryParse(source[key], out long ticks)
+                        ? TimeSpan.FromTicks(ticks)
+                        : defaultTimeSpan;
+
         /// <exception cref="ArgumentException">Entry <paramref name="key"/> is missing.</exception>
         [PublicAPI]
         public static string[] GetFromCSV(this System.Collections.Specialized.NameValueCollection source, string key,
