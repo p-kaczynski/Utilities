@@ -84,5 +84,53 @@ namespace Utilities.Collections.Enumerables
         {
             return src == null ? string.Empty : string.Join(",", src);
         }
+
+        /// <summary>
+        /// For enumerations of {a,b,c,d} and {1,2,3} returns an enumeration of {a,1,b,2,c,3,d}
+        /// </summary>
+        /// <typeparam name="T">Any</typeparam>
+        /// <param name="source">The source enumeration (will start from this</param>
+        /// <param name="other">The other enumeration (will start at position 2)</param>
+        /// <param name="appendTail">Whether to include at the end remaining elements of the longer enumeration, if they are not even</param>
+        /// <returns>An enumeration that intertwines the two passed to it, starting from <paramref name="source"/></returns>
+        [NotNull]
+        [MustUseReturnValue]
+        public static IEnumerable<T> Intertwine<T>([NotNull] this IEnumerable<T> source, [NotNull] IEnumerable<T> other, bool appendTail = true)
+        {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (other == null) throw new ArgumentNullException(nameof(other));
+
+            using (var sourceEnumerator = source.GetEnumerator())
+            using (var otherEnumerator = other.GetEnumerator())
+            {
+                var sourceHasNext = sourceEnumerator.MoveNext();
+                var otherHasNext = otherEnumerator.MoveNext();
+
+                while (sourceHasNext && otherHasNext)
+                {
+                    yield return sourceEnumerator.Current;
+                    yield return otherEnumerator.Current;
+
+                    sourceHasNext = sourceEnumerator.MoveNext();
+                    otherHasNext = otherEnumerator.MoveNext();
+                }
+
+                if (!appendTail) yield break;
+
+                // append rest of source
+                while (sourceHasNext)
+                {
+                    yield return sourceEnumerator.Current;
+                    sourceHasNext = sourceEnumerator.MoveNext();
+                }
+
+                // OR append rest from the other
+                while (otherHasNext)
+                {
+                    yield return otherEnumerator.Current;
+                    otherHasNext = otherEnumerator.MoveNext();
+                }
+            }
+        }
     }
 }
