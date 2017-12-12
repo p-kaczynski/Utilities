@@ -19,7 +19,7 @@ namespace Utilities.Collections.Enumerables
         /// <returns>An enumerable representing <paramref name="source"/> followed by <paramref name="elements"/></returns>
         /// <exception cref="ArgumentNullException"><paramref name="source" /> or <paramref name="elements" /> is null.</exception>
         [NotNull]
-        [UsedImplicitly]
+        [PublicAPI]
         public static IEnumerable<T> ConcatParams<T>([NotNull] this IEnumerable<T> source, [NotNull] params T[] elements)
         {
             return Enumerable.Concat(source, elements);
@@ -32,12 +32,14 @@ namespace Utilities.Collections.Enumerables
         /// <param name="src">Any enumerable</param>
         /// <returns><paramref name="src"/> if not null, else empty <typeparamref name="T"/> enumerable</returns>
         [NotNull]
-        [UsedImplicitly]
+        [PublicAPI]
         public static IEnumerable<T> OrEmpty<T>([CanBeNull] this IEnumerable<T> src)
         {
             return src ?? Enumerable.Empty<T>();
         }
 
+        [NotNull]
+        [PublicAPI]
         public static IEnumerable<T> SkipLast<T>([NotNull] this IEnumerable<T> source)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
@@ -59,6 +61,8 @@ namespace Utilities.Collections.Enumerables
             it.Dispose();
         }
 
+        [NotNull]
+        [PublicAPI]
         public static IEnumerable<T> SkipLastN<T>([NotNull] this IEnumerable<T> source, int n)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
@@ -80,6 +84,36 @@ namespace Utilities.Collections.Enumerables
             it.Dispose();
         }
 
+        [NotNull]
+        [PublicAPI]
+        public static IEnumerable<TResult> SelectSafe<T, TResult>([NotNull] this IEnumerable<T> source,
+            Func<T, TResult> selector, Action<T, Exception> exceptionCallback)
+        {
+            var result = default(TResult);
+            foreach (var item in source)
+            {
+                var exceptionOccured = false;
+                try
+                {
+                    result = selector(item);
+                }
+                catch (Exception exception)
+                {
+                    exceptionOccured = true;
+                    exceptionCallback?.Invoke(item, exception);
+                }
+                if (!exceptionOccured)
+                    yield return result;
+            }
+        }
+
+        [NotNull]
+        [PublicAPI]
+        public static IEnumerable<TResult> SelectSafe<T, TResult>([NotNull] this IEnumerable<T> source,
+            Func<T, TResult> selector) => SelectSafe(source, selector, null);
+
+        [NotNull]
+        [PublicAPI]
         public static string ToCSV<T>([CanBeNull] this IEnumerable<T> src)
         {
             return src == null ? string.Empty : string.Join(",", src);
