@@ -166,5 +166,46 @@ namespace Utilities.Collections.Enumerables
                 }
             }
         }
+        [NotNull]
+        [PublicAPI]
+        public static HashSet<T> ToHashSet<T>([NotNull]this IEnumerable<T> src) => new HashSet<T>(src);
+
+        [NotNull]
+        [PublicAPI]
+        public static HashSet<T> ToHashSet<T>([NotNull]this IEnumerable<T> src, IEqualityComparer<T> equalityComparer) => new HashSet<T>(src, equalityComparer);
+
+        [NotNull]
+        [PublicAPI]
+        public static IEnumerable<TValue> ApplyKeys<TKey, TValue>([NotNull] this IEnumerable<TKey> keys,
+            [NotNull] IDictionary<TKey, TValue> dict)
+            => keys.Where(dict.ContainsKey).Select(key => dict[key]);
+
+        [NotNull]
+        [PublicAPI]
+        public static IEnumerable<TCol1> IntersectWithBy<TCol1, TCol2, TValue>(this IEnumerable<TCol1> first,
+            IEnumerable<TCol2> second, Func<TCol1, TValue> firstSelector, Func<TCol2, TValue> secondSelector, IEqualityComparer<TValue> comparer = null)
+        {
+            var values = comparer == null ? new HashSet<TValue>() : new HashSet<TValue>(comparer);
+
+            using (var firstE = first.GetEnumerator())
+            using (var secondE = second.GetEnumerator())
+            {
+                while (firstE.MoveNext())
+                {
+                    var firstVal = firstSelector(firstE.Current);
+                    while (!values.Contains(firstVal) && secondE.MoveNext())
+                        values.Add(secondSelector(secondE.Current));
+
+                    if (values.Contains(firstVal))
+                        yield return firstE.Current;
+                }
+            }
+        }
+
+        [NotNull]
+        [PublicAPI]
+        public static IEnumerable<TCol1> IntersectWithBy<TCol1, TValue>(this IEnumerable<TCol1> first,
+            IEnumerable<TValue> second, Func<TCol1, TValue> firstSelector, IEqualityComparer<TValue> comparer = null)
+            => IntersectWithBy<TCol1, TValue, TValue>(first, second, firstSelector, x => x, comparer);
     }
 }
